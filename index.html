@@ -72,8 +72,6 @@
       background-clip: unset;
     }
 
-    /* header actions removed — now we have footer nav */
-
     /* ----- SEARCH SECTION (main “how may i help you”) ----- */
     .search-hero {
       display: flex;
@@ -83,6 +81,7 @@
       flex: 1 0 auto;
       padding: 2rem 0 3rem 0;
       text-align: center;
+      transition: all 0.2s;
     }
 
     .search-hero .greeting {
@@ -257,6 +256,71 @@
       color: #4873a3;
     }
 
+    /* ----- PAGE CONTENT (dynamic) ----- */
+    .page-content {
+      margin-top: 1.5rem;
+      padding: 1.5rem 2rem;
+      background: white;
+      border-radius: 24px;
+      border: 1px solid #eef2f7;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.02);
+      text-align: left;
+      width: 100%;
+      max-width: 720px;
+      display: none;
+      transition: all 0.2s;
+    }
+
+    .page-content.visible {
+      display: block;
+    }
+
+    .page-content h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #0b1a2e;
+      margin-bottom: 0.8rem;
+      letter-spacing: -0.3px;
+    }
+
+    .page-content h2 i {
+      margin-right: 10px;
+      color: #3d6b9b;
+    }
+
+    .page-content p {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #1f3a5f;
+      margin-bottom: 0.8rem;
+    }
+
+    .page-content ul {
+      padding-left: 1.5rem;
+      color: #1f3a5f;
+      line-height: 1.7;
+    }
+
+    .page-content ul li {
+      margin-bottom: 0.3rem;
+    }
+
+    .page-content .back-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: #3d6b9b;
+      cursor: pointer;
+      font-weight: 500;
+      border-bottom: 1px dashed #b6c9e0;
+      padding-bottom: 2px;
+      transition: 0.1s;
+    }
+
+    .page-content .back-link:hover {
+      color: #0b1a2e;
+      border-bottom-color: #3d6b9b;
+    }
+
     /* ----- FOOTER with nav links: privacy, contact, about, terms ----- */
     .footer-bar {
       margin-top: 2.5rem;
@@ -289,6 +353,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.3rem;
+      cursor: pointer;
     }
 
     .footer-nav a i {
@@ -418,6 +483,10 @@
         font-size: 0.85rem;
         padding: 0.3rem 1.2rem;
       }
+
+      .page-content {
+        padding: 1.2rem;
+      }
     }
 
     @media (max-width: 480px) {
@@ -439,11 +508,10 @@
         <h1>Robinhood</h1>
         <span class="sub"><i class="fas fa-compass" style="margin-right: 6px;"></i> how may I help?</span>
       </div>
-      <!-- header actions removed -->
     </header>
 
     <!-- MAIN: search based “how may i help you” -->
-    <main class="search-hero">
+    <main class="search-hero" id="mainSearchHero">
       <div class="greeting">
         <i class="fas fa-regular fa-hand-peace" style="margin-right: 8px; color: #3d6b9b;"></i> 
         How may I help you?
@@ -452,8 +520,8 @@
       <!-- search box -->
       <div class="search-box">
         <i class="fas fa-search"></i>
-        <input type="text" placeholder="Ask anything, find answers..." aria-label="Search">
-        <button type="button"><i class="fas fa-arrow-right"></i> Search</button>
+        <input type="text" placeholder="Ask anything, find answers..." aria-label="Search" id="searchInput">
+        <button type="button" id="searchBtn"><i class="fas fa-arrow-right"></i> Search</button>
       </div>
 
       <!-- suggestion chips (demo) -->
@@ -477,19 +545,28 @@
           Try “options”, “fees”, “withdrawal” …
         </div>
       </div>
+
+      <!-- DYNAMIC PAGE CONTENT (hidden by default) -->
+      <div class="page-content" id="pageContent">
+        <h2 id="pageTitle"><i class="fas fa-file-lines"></i> <span id="pageTitleText">Page</span></h2>
+        <div id="pageBody">
+          <p>Content loaded.</p>
+        </div>
+        <span class="back-link" id="backToSearch"><i class="fas fa-arrow-left"></i> Back to search</span>
+      </div>
     </main>
 
     <!-- FOOTER with nav: privacy, contact, about, terms + toll-free -->
     <footer class="footer-bar">
       <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.3rem;">
         <div class="footer-nav">
-          <a href="#"><i class="fas fa-regular fa-lock"></i> Privacy</a>
+          <a data-page="privacy"><i class="fas fa-regular fa-lock"></i> Privacy</a>
           <span class="nav-divider">|</span>
-          <a href="#"><i class="fas fa-regular fa-envelope"></i> Contact</a>
+          <a data-page="contact"><i class="fas fa-regular fa-envelope"></i> Contact</a>
           <span class="nav-divider">|</span>
-          <a href="#"><i class="fas fa-regular fa-circle-info"></i> About</a>
+          <a data-page="about"><i class="fas fa-regular fa-circle-info"></i> About</a>
           <span class="nav-divider">|</span>
-          <a href="#"><i class="fas fa-regular fa-file-lines"></i> Terms</a>
+          <a data-page="terms"><i class="fas fa-regular fa-file-lines"></i> Terms</a>
         </div>
         <div class="footer-copy">
           © 2026 Robinhood
@@ -504,12 +581,119 @@
     </footer>
   </div>
 
-  <!-- interaction: search demo + nav links show alert (demo) -->
   <script>
     (function() {
-      const searchBtn = document.querySelector('.search-box button');
-      const searchInput = document.querySelector('.search-box input');
+      // ----- DOM refs -----
+      const searchHero = document.getElementById('mainSearchHero');
+      const pageContent = document.getElementById('pageContent');
+      const pageTitleText = document.getElementById('pageTitleText');
+      const pageBody = document.getElementById('pageBody');
+      const backLink = document.getElementById('backToSearch');
 
+      const searchInput = document.getElementById('searchInput');
+      const searchBtn = document.getElementById('searchBtn');
+
+      // ----- page data -----
+      const pageData = {
+        privacy: {
+          title: 'Privacy Policy',
+          body: `
+            <p><strong>Last updated:</strong> January 2026</p>
+            <p>At Robinhood, we take your privacy seriously. This policy describes how we collect, use, and protect your personal information.</p>
+            <ul>
+              <li><strong>Information we collect:</strong> Account details, transaction history, and device information.</li>
+              <li><strong>How we use it:</strong> To provide services, improve our platform, and comply with legal obligations.</li>
+              <li><strong>Data protection:</strong> We use industry-standard encryption and security measures.</li>
+              <li><strong>Your rights:</strong> You can access, correct, or delete your data at any time.</li>
+            </ul>
+            <p>For questions, contact us at <strong>privacy@robinhood.com</strong> or call <strong>909-312-7875</strong>.</p>
+          `
+        },
+        contact: {
+          title: 'Contact Us',
+          body: `
+            <p><strong>We're here to help.</strong> Reach out to our support team through any of the channels below.</p>
+            <ul>
+              <li><strong>Phone:</strong> 909-312-7875 (toll-free)</li>
+              <li><strong>Email:</strong> support@robinhood.com</li>
+              <li><strong>Live chat:</strong> Available 24/7 via the app</li>
+              <li><strong>Mail:</strong> Robinhood, 85 Willow Road, Menlo Park, CA 94025</li>
+            </ul>
+            <p>Our support hours are Monday–Friday, 6am–6pm PT.</p>
+          `
+        },
+        about: {
+          title: 'About Robinhood',
+          body: `
+            <p><strong>Mission:</strong> To democratize finance for all.</p>
+            <p>Robinhood was founded in 2013 with a simple idea: financial services should be accessible to everyone, not just the wealthy. We provide commission-free trading, fractional shares, and intuitive tools to help you invest with confidence.</p>
+            <ul>
+              <li><strong>Headquarters:</strong> Menlo Park, California</li>
+              <li><strong>Founded:</strong> 2013</li>
+              <li><strong>Users:</strong> Over 20 million</li>
+              <li><strong>Products:</strong> Stocks, ETFs, Options, Crypto, and more</li>
+            </ul>
+            <p>We're committed to transparency, innovation, and putting our customers first.</p>
+          `
+        },
+        terms: {
+          title: 'Terms of Service',
+          body: `
+            <p><strong>Effective:</strong> January 2026</p>
+            <p>By using Robinhood, you agree to the following terms and conditions.</p>
+            <ul>
+              <li><strong>Account responsibility:</strong> You are responsible for all activity on your account.</li>
+              <li><strong>Investment risk:</strong> All investments carry risk. Past performance does not guarantee future results.</li>
+              <li><strong>Fees:</strong> While we offer commission-free trading, certain regulatory fees may apply.</li>
+              <li><strong>Dispute resolution:</strong> Any disputes will be resolved through arbitration in accordance with FINRA rules.</li>
+            </ul>
+            <p>For the full terms, visit our legal page or contact us at <strong>legal@robinhood.com</strong>.</p>
+          `
+        }
+      };
+
+      // ----- show page function -----
+      function showPage(pageKey) {
+        const data = pageData[pageKey];
+        if (!data) return;
+
+        // hide search elements, show page content
+        document.querySelector('.greeting').style.display = 'none';
+        document.querySelector('.search-box').style.display = 'none';
+        document.querySelector('.suggestions').style.display = 'none';
+        document.querySelector('.demo-hint-block').style.display = 'none';
+
+        pageTitleText.textContent = data.title;
+        pageBody.innerHTML = data.body;
+        pageContent.classList.add('visible');
+      }
+
+      // ----- hide page, show search -----
+      function hidePage() {
+        pageContent.classList.remove('visible');
+        document.querySelector('.greeting').style.display = '';
+        document.querySelector('.search-box').style.display = '';
+        document.querySelector('.suggestions').style.display = '';
+        document.querySelector('.demo-hint-block').style.display = '';
+      }
+
+      // ----- nav link clicks -----
+      const navLinks = document.querySelectorAll('.footer-nav a[data-page]');
+      navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const page = this.getAttribute('data-page');
+          showPage(page);
+        });
+      });
+
+      // ----- back link -----
+      backLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        hidePage();
+      });
+
+      // ----- search functionality -----
       function handleSearch() {
         const query = searchInput.value.trim();
         if (query === '') {
@@ -527,7 +711,7 @@
         }
       });
 
-      // click on suggestion chips (demo)
+      // ----- suggestion chips -----
       const chips = document.querySelectorAll('.suggestions span');
       chips.forEach(chip => {
         chip.addEventListener('click', function() {
@@ -537,14 +721,11 @@
         });
       });
 
-      // ---- footer nav links: show alert when clicked (demo) ----
-      const navLinks = document.querySelectorAll('.footer-nav a');
-      navLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-          e.preventDefault();
-          const text = this.innerText.trim();
-          alert(`📄 ${text} page · (demo navigation)\n toll-free 909-312-7875`);
-        });
+      // ----- reset to search if page was open and user clicks on brand (optional) -----
+      document.querySelector('.brand-title h1').addEventListener('click', function() {
+        if (pageContent.classList.contains('visible')) {
+          hidePage();
+        }
       });
     })();
   </script>
