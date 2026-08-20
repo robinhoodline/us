@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robinhood · How may I help you</title>
+  <!-- Font Awesome (free icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #f8fafc;
+      color: #0b1a2e;
+    }
+
+    .app-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem 2rem;
+      width: 100%;
+    }
+
+    /* ----- HEADER / TITLE “Robinhood” (no help/signin) ----- */
+    .brand-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 0 0.5rem 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+    }
+
+    .brand-title h1 {
+      font-size: 2.4rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(145deg, #1f3a5f, #0b1a2e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .brand-title .sub {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #3d5a78;
+      background: #e9edf2;
+      padding: 0.15rem 0.9rem;
+      border-radius: 30px;
+      letter-spacing: 0.3px;
+      -webkit-text-fill-color: #1f3a5f;
+      background-clip: unset;
+    }
+
+    /* header actions removed — now we have footer nav */
+
+    /* ----- SEARCH SECTION (main “how may i help you”) ----- */
+    .search-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1 0 auto;
+      padding: 2rem 0 3rem 0;
+      text-align: center;
+    }
+
+    .search-hero .greeting {
+      font-size: 1.8rem;
+      font-weight: 500;
+      color: #1f3a5f;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.3px;
+    }
+
+    .search-hero .greeting span {
+      font-weight: 300;
+      color: #3d6b9b;
+    }
+
+    .search-box {
+      margin-top: 1.5rem;
+      width: 100%;
+      max-width: 680px;
+      background: white;
+      border-radius: 80px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.04), 0 2px 8px rgba(0, 20, 40, 0.04);
+      display: flex;
+      align-items: center;
+      padding: 0.3rem 0.3rem 0.3rem 1.8rem;
+      transition: box-shadow 0.2s;
+      border: 1px solid #eef2f7;
+    }
+
+    .search-box:focus-within {
+      box-shadow: 0 12px 32px rgba(26, 67, 113, 0.08), 0 2px 10px rgba(0, 20, 40, 0.06);
+      border-color: #b6c9e0;
+    }
+
+    .search-box i {
+      color: #7a93af;
+      font-size: 1.2rem;
+    }
+
+    .search-box input {
+      flex: 1;
+      border: none;
+      padding: 1rem 0.8rem;
+      font-size: 1.1rem;
+      background: transparent;
+      outline: none;
+      color: #0b1a2e;
+      font-weight: 450;
+      letter-spacing: -0.2px;
+    }
+
+    .search-box input::placeholder {
+      color: #a6b9cf;
+      font-weight: 350;
+      letter-spacing: -0.1px;
+    }
+
+    .search-box button {
+      background: #1f3a5f;
+      color: white;
+      border: none;
+      border-radius: 60px;
+      padding: 0.8rem 2.2rem;
+      font-weight: 500;
+      font-size: 1rem;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.05s;
+      white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(26, 67, 113, 0.2);
+    }
+
+    .search-box button:hover {
+      background: #12304f;
+    }
+
+    .search-box button:active {
+      transform: scale(0.96);
+    }
+
+    /* quick suggestion chips */
+    .suggestions {
+      margin-top: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.6rem 0.8rem;
+      max-width: 600px;
+    }
+
+    .suggestions span {
+      background: #edf2f9;
+      padding: 0.4rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      color: #1f3a5f;
+      font-weight: 450;
+      border: 1px solid transparent;
+      transition: 0.1s ease;
+      cursor: default;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+      letter-spacing: -0.1px;
+    }
+
+    .suggestions span i {
+      margin-right: 6px;
+      font-size: 0.8rem;
+      color: #4a7aa7;
+    }
+
+    .suggestions span:hover {
+      background: #e1e9f4;
+      border-color: #c7d8ec;
+    }
+
+    /* ----- DEMO HINT: phone number SEPARATE line, then “try options” on another line ----- */
+    .demo-hint-block {
+      margin-top: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.6rem;
+      width: 100%;
+    }
+
+    .hint-phone {
+      background: #d4edda;
+      border: 1px solid #b8dbc4;
+      border-radius: 60px;
+      padding: 0.5rem 2rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 1.3rem;
+      font-weight: 550;
+      color: #0a3622;
+      box-shadow: 0 2px 8px rgba(40, 100, 60, 0.06);
+      letter-spacing: -0.2px;
+    }
+
+    .hint-phone i {
+      color: #1e6b3b;
+      font-size: 1.2rem;
+    }
+
+    .hint-phone .number {
+      font-weight: 600;
+      background: rgba(255,255,255,0.3);
+      padding: 0.05rem 0.9rem;
+      border-radius: 40px;
+      border: 1px solid rgba(30, 107, 59, 0.1);
+    }
+
+    .hint-try {
+      background: #edf2f8;
+      border: 1px solid #dce5ef;
+      border-radius: 60px;
+      padding: 0.4rem 1.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.95rem;
+      color: #1f3a5f;
+      font-weight: 460;
+      letter-spacing: 0.1px;
+    }
+
+    .hint-try i {
+      color: #4873a3;
+    }
+
+    /* ----- FOOTER with nav links: privacy, contact, about, terms ----- */
+    .footer-bar {
+      margin-top: 2.5rem;
+      padding: 1.2rem 0.8rem;
+      border-top: 1px solid rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem 1.2rem;
+      background: transparent;
+    }
+
+    .footer-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem 1.2rem;
+      flex-wrap: wrap;
+      font-size: 0.95rem;
+    }
+
+    .footer-nav a {
+      color: #1f3a5f;
+      text-decoration: none;
+      font-weight: 450;
+      padding: 0.2rem 0;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.15s, color 0.1s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .footer-nav a i {
+      font-size: 0.9rem;
+      color: #4a7aa7;
+    }
+
+    .footer-nav a:hover {
+      border-bottom-color: #8aa3c0;
+      color: #0b1a2e;
+    }
+
+    .footer-nav .nav-divider {
+      color: #bcc9d8;
+      font-weight: 300;
+      user-select: none;
+    }
+
+    .footer-copy {
+      font-size: 0.9rem;
+      color: #5d738b;
+    }
+
+    /* ----- toll-free in footer (light green) consistent ----- */
+    .toll-free {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 550;
+      font-size: 1.5rem;
+      letter-spacing: -0.3px;
+      background: #d4edda;
+      padding: 0.45rem 1.6rem 0.45rem 1.4rem;
+      border-radius: 80px;
+      color: #0a3622;
+      box-shadow: 0 2px 8px rgba(40, 100, 60, 0.08);
+      border: 1px solid #b8dbc4;
+      transition: 0.1s ease;
+    }
+
+    .toll-free i {
+      font-size: 1.3rem;
+      color: #1e6b3b;
+    }
+
+    .toll-free .number {
+      font-weight: 600;
+      background: transparent;
+      padding: 0 0.1rem;
+    }
+
+    /* responsive */
+    @media (max-width: 700px) {
+      .app-wrapper {
+        padding: 1rem 1.2rem;
+      }
+
+      .brand-title h1 {
+        font-size: 2rem;
+      }
+
+      .search-box {
+        flex-wrap: wrap;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        gap: 0.8rem;
+        border-radius: 0;
+      }
+
+      .search-box input {
+        background: white;
+        border-radius: 60px;
+        padding: 0.9rem 1.5rem;
+        border: 1px solid #dde4ed;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        width: 100%;
+        font-size: 1rem;
+      }
+
+      .search-box button {
+        width: 100%;
+        justify-content: center;
+        padding: 0.9rem;
+        border-radius: 60px;
+      }
+
+      .search-box i.fa-search {
+        display: none;
+      }
+
+      .footer-bar {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        text-align: center;
+        gap: 0.8rem;
+      }
+
+      .toll-free {
+        justify-content: center;
+        font-size: 1.4rem;
+        padding: 0.5rem 1rem;
+      }
+
+      .footer-nav {
+        justify-content: center;
+        font-size: 0.9rem;
+        gap: 0.2rem 0.8rem;
+      }
+
+      .footer-copy {
+        text-align: center;
+        font-size: 0.8rem;
+      }
+
+      .search-hero .greeting {
+        font-size: 1.5rem;
+      }
+
+      .hint-phone {
+        font-size: 1.1rem;
+        padding: 0.4rem 1.2rem;
+      }
+
+      .hint-try {
+        font-size: 0.85rem;
+        padding: 0.3rem 1.2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .brand-title h1 {
+        font-size: 1.8rem;
+      }
+      .toll-free {
+        font-size: 1.2rem;
+        padding: 0.4rem 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper">
+    <!-- header: Robinhood only (no help/signin) -->
+    <header class="brand-header">
+      <div class="brand-title">
+        <h1>Robinhood</h1>
+        <span class="sub"><i class="fas fa-compass" style="margin-right: 6px;"></i> how may I help?</span>
+      </div>
+      <!-- header actions removed -->
+    </header>
+
+    <!-- MAIN: search based “how may i help you” -->
+    <main class="search-hero">
+      <div class="greeting">
+        <i class="fas fa-regular fa-hand-peace" style="margin-right: 8px; color: #3d6b9b;"></i> 
+        How may I help you?
+      </div>
+
+      <!-- search box -->
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Ask anything, find answers..." aria-label="Search">
+        <button type="button"><i class="fas fa-arrow-right"></i> Search</button>
+      </div>
+
+      <!-- suggestion chips (demo) -->
+      <div class="suggestions">
+        <span><i class="fas fa-regular fa-circle"></i> Investments</span>
+        <span><i class="fas fa-regular fa-clock"></i> Trading hours</span>
+        <span><i class="fas fa-regular fa-credit-card"></i> Deposits</span>
+        <span><i class="fas fa-regular fa-chart-simple"></i> Market data</span>
+        <span><i class="fas fa-regular fa-lock"></i> Security</span>
+      </div>
+
+      <!-- demo hint: phone number SEPARATE line, then “try options” on another line -->
+      <div class="demo-hint-block">
+        <div class="hint-phone">
+          <i class="fas fa-phone-volume"></i>
+          <span class="number">909-312-7875</span>
+          <span style="font-size: 0.75rem; font-weight: 400; opacity: 0.7; margin-left: 2px;">toll-free</span>
+        </div>
+        <div class="hint-try">
+          <i class="fas fa-regular fa-magnifying-glass"></i>
+          Try “options”, “fees”, “withdrawal” …
+        </div>
+      </div>
+    </main>
+
+    <!-- FOOTER with nav: privacy, contact, about, terms + toll-free -->
+    <footer class="footer-bar">
+      <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.3rem;">
+        <div class="footer-nav">
+          <a href="#"><i class="fas fa-regular fa-lock"></i> Privacy</a>
+          <span class="nav-divider">|</span>
+          <a href="#"><i class="fas fa-regular fa-envelope"></i> Contact</a>
+          <span class="nav-divider">|</span>
+          <a href="#"><i class="fas fa-regular fa-circle-info"></i> About</a>
+          <span class="nav-divider">|</span>
+          <a href="#"><i class="fas fa-regular fa-file-lines"></i> Terms</a>
+        </div>
+        <div class="footer-copy">
+          © 2026 Robinhood
+        </div>
+      </div>
+      <!-- toll free number – light green (footer) -->
+      <div class="toll-free">
+        <i class="fas fa-phone-volume"></i>
+        <span class="number">909-312-7875</span>
+        <span style="font-size: 0.75rem; font-weight: 400; opacity: 0.8; margin-left: 4px;">toll-free</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- interaction: search demo + nav links show alert (demo) -->
+  <script>
+    (function() {
+      const searchBtn = document.querySelector('.search-box button');
+      const searchInput = document.querySelector('.search-box input');
+
+      function handleSearch() {
+        const query = searchInput.value.trim();
+        if (query === '') {
+          alert('💬 Please type your question — how may I help you?');
+        } else {
+          alert(`🔍 Robinhood help · you searched for: “${query}”\n( demo search · toll-free 909-312-7875 )`);
+        }
+      }
+
+      searchBtn.addEventListener('click', handleSearch);
+      searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleSearch();
+        }
+      });
+
+      // click on suggestion chips (demo)
+      const chips = document.querySelectorAll('.suggestions span');
+      chips.forEach(chip => {
+        chip.addEventListener('click', function() {
+          const text = this.innerText.trim();
+          searchInput.value = text;
+          handleSearch();
+        });
+      });
+
+      // ---- footer nav links: show alert when clicked (demo) ----
+      const navLinks = document.querySelectorAll('.footer-nav a');
+      navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const text = this.innerText.trim();
+          alert(`📄 ${text} page · (demo navigation)\n toll-free 909-312-7875`);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
